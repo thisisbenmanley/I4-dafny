@@ -1,29 +1,31 @@
 # Haojun Ma(mahaojun@umich.edu)
 
-import ivy_init
+from ivy import ivy_init
 #import ivy_interp as itp
-import ivy_actions as act
-import ivy_utils as utl
+from ivy import ivy_actions as act
+from ivy import ivy_utils as utl
 #import ivy_logic_utils as lut
 #import ivy_logic as lg
-import ivy_utils as iu
-import ivy_module as im
+from ivy import ivy_utils as iu
+from ivy import ivy_module as im
 #import ivy_alpha
 #import ivy_art
 #import ivy_interp
 #import ivy_compiler
 #import ivy_isolate
-import ivy_ast
+from ivy import ivy_ast
 #import ivy_theory as ith
 #import ivy_transrel as itr
 #import ivy_solver as islv
 #import ivy_fragment as ifc
-from ivy_compiler import read_module
+from ivy.ivy_compiler import read_module
 import sys
 import math
 
+verbose = False
+
 def usage():
-    print "usage: \n  {} file.ivy".format(sys.argv[0])
+    print "usage: \n  {} file.ivy verbose=[true/false]".format(sys.argv[0])
     sys.exit(1)
 
 def f_ConstantSort(x):
@@ -501,6 +503,8 @@ def translate(decls):
 
     print '''; Define and enumerate transition system parameters'''
     for decl in decls.decls:
+        if verbose:
+            print "decl: " + str(decl)
         if type(decl) == ivy_ast.TypeDecl:
             name = f_TypeDecl(decl)
 #            if name == 'epoch' or name == 'round':
@@ -627,10 +631,17 @@ instance = dict()
 lemmas = []
 
 def main():
+    global verbose
     ivy_init.read_params()
     if not sys.argv[1].endswith('ivy'):
         usage()
-    for i in range(2, len(sys.argv)):
+    verboseStuff = sys.argv[2].split('=')
+    if verboseStuff[0] != "verbose":
+        usage()
+    if verboseStuff[1] == "true":
+        verbose = True
+    # for i in range(2, len(sys.argv)):
+    for i in range(3, len(sys.argv)):
         st = sys.argv[i].split('=')
         instance[st[0]] = eval(st[1])
 
